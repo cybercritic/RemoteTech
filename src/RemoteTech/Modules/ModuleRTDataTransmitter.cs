@@ -50,6 +50,20 @@ namespace RemoteTech.Modules
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
         bool IScienceDataTransmitter.IsBusy() { return mBusy; }
 
+        //critic 1.0, need a new callback
+        private Callback CallBackFunction;
+
+        //critic 1.0, TransmitData needs this extra function with callback
+        void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue, Callback NewCallBackFunction)
+        {
+            mQueue.AddRange(dataQueue);
+            if (!mBusy)
+            {
+                StartCoroutine(Transmit());
+                CallBackFunction = NewCallBackFunction;    
+            }
+        }
+
         void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
         {
             mQueue.AddRange(dataQueue);
@@ -109,7 +123,9 @@ namespace RemoteTech.Modules
                         ScreenMessages.PostScreenMessage(msg_status, true);
                         if (commStream != null)
                         {
-                            commStream.StreamData(frame);
+                            //critic, streamdata needs protovessel for 1.0
+                            //commStream.StreamData(frame);
+                            commStream.StreamData(frame,this.part.vessel.protoVessel);
                         }
                     }
                     else
