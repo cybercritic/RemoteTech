@@ -84,6 +84,8 @@ namespace RemoteTech.Modules
                     FlightComputer = new FlightComputer.FlightComputer(this);
             }
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
+
+            HookPartMenus();
         }
 
         public void OnDestroy()
@@ -127,7 +129,7 @@ namespace RemoteTech.Modules
         public void FixedUpdate()
         {
             if (FlightComputer != null) FlightComputer.OnFixedUpdate();
-            HookPartMenus();
+            
             switch (UpdateControlState())
             {
                 case State.Operational:
